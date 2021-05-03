@@ -7,10 +7,11 @@ public class PlayerMovement : MonoBehaviour
 
     public CharacterController2D controller;
 
-    public float runSpeed = 40f;
+    public float runSpeed = 400f;
 
     private float horzMove = 0f;
     private bool jump = false;
+    private bool dash = false;
 
     // Start is called before the first frame update
     void Start()
@@ -23,16 +24,28 @@ public class PlayerMovement : MonoBehaviour
     {
         horzMove = Input.GetAxisRaw("Horizontal") * runSpeed;
 
-        if (Input.GetButtonDown("Jump"))
+        if (Input.GetKey(KeyCode.Space))
         {
             jump = true;
+        }
+        else
+        {
+            jump = false;
+        }
+
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            dash = true;
+        }
+        else
+        {
+            dash = false;
         }
     }
 
     // Update is called a fixed number of times per second
     private void FixedUpdate()
     {
-        controller.Move(horzMove * Time.fixedDeltaTime, false, jump);
-        jump = false;
+        controller.Move(horzMove * Time.fixedDeltaTime, jump, dash);
     }
 }
