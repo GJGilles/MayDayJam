@@ -3,12 +3,14 @@ using UnityEngine.Events;
 
 public class CharacterController2D : MonoBehaviour
 {
+	[SerializeField] private float m_MoveSpeed = 400f;
 	[SerializeField] private float m_JumpForce = 400f;                          // Amount of force added when the player jumps.
 	[SerializeField] private float m_JumpCut = 0.8f;
 	[SerializeField] private float m_DashForce = 400f;                          // Amount of force added when the player dashes.
 	[SerializeField] private float m_DashCooldown = 1f;
 	[SerializeField] private float m_SpeedSmoothing = 0.2f;
 	[SerializeField] private float m_SlowSmoothing = 0.1f;
+	[SerializeField] private float m_StopSmoothing = 0.05f;
 	[SerializeField] private LayerMask m_WhatIsGround;							// A mask determining what is ground to the character
 	[SerializeField] private Transform m_GroundCheck;							// A position marking where to check if the player is grounded.
 	[SerializeField] private Transform m_CeilingCheck;							// A position marking where to check for ceilings
@@ -107,35 +109,39 @@ public class CharacterController2D : MonoBehaviour
 		#endregion
 
 		#region Ground Movement
-		//if (m_Grounded)
-		//{
-			float currMove = m_Rigidbody2D.velocity.x;
-			Vector3 targetVelocity = new Vector2(move, m_Rigidbody2D.velocity.y);
+		float newMove = move * m_MoveSpeed * Time.deltaTime;
+		float currMove = m_Rigidbody2D.velocity.x;
+		float threshold = 0.001f;
 
-			// Speeding up
-			if (((move >= 0 && currMove >= 0) || (move <= 0 && currMove <= 0)) && Mathf.Max(move) > Mathf.Max(currMove))
-            {
-				m_Rigidbody2D.velocity = Vector3.SmoothDamp(m_Rigidbody2D.velocity, targetVelocity, ref m_Velocity, m_SpeedSmoothing);
-			}
-			// Slowing down
-            else
-            {
-				m_Rigidbody2D.velocity = Vector3.SmoothDamp(m_Rigidbody2D.velocity, targetVelocity, ref m_Velocity, m_SlowSmoothing);
-			}
-			
-		//}
-		#endregion
-
-		#region Air Movement
-		//else
+		// Speeding up
+		if (((newMove >= -1*threshold && currMove >= -1*threshold) || (newMove <= threshold && currMove <= threshold)) && Mathf.Abs(newMove) >= Mathf.Abs(currMove))
         {
+			Vector3 targetVelocity = new Vector2(newMove, m_Rigidbody2D.velocity.y);
+			m_Rigidbody2D.velocity = Vector3.SmoothDamp(m_Rigidbody2D.velocity, targetVelocity, ref m_Velocity, m_SpeedSmoothing);
+		}
+		// Slowing down (Positive)
+		else if (currMove >= threshold && currMove >= 1 * m_MoveSpeed * Time.deltaTime)
+		{
+			Vector3 targetVelocity = new Vector2(0, m_Rigidbody2D.velocity.y);
+			m_Rigidbody2D.velocity = Vector3.SmoothDamp(m_Rigidbody2D.velocity, targetVelocity, ref m_Velocity, m_SlowSmoothing);
+		}
+		// Slowing Down (Negative)
+		else if (currMove <= -1*threshold && currMove <= -1 * m_MoveSpeed * Time.deltaTime)
+		{
+			Vector3 targetVelocity = new Vector2(0, m_Rigidbody2D.velocity.y);
+			m_Rigidbody2D.velocity = Vector3.SmoothDamp(m_Rigidbody2D.velocity, targetVelocity, ref m_Velocity, m_SlowSmoothing);
+		}
+		// Stopping 
+        else
+        {
+			Vector3 targetVelocity = new Vector2(0, m_Rigidbody2D.velocity.y);
+			m_Rigidbody2D.velocity = Vector3.SmoothDamp(m_Rigidbody2D.velocity, targetVelocity, ref m_Velocity, m_StopSmoothing);
+		}
+        #endregion
 
-        }
-		#endregion
-
-		#region Action Movement
-		// If the player should jump...
-		if (jump)
+        #region Action Movement
+        // If the player should jump...
+        if (jump)
 		{
 			// Add a vertical force to the player.
 			m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
@@ -147,6 +153,10 @@ public class CharacterController2D : MonoBehaviour
         {
 			float force = m_DashForce * (m_FacingRight ? 1 : -1);
 			m_Rigidbody2D.AddForce(new Vector2(force, 0f));
+			if (m_Rigidbody2D.velocity.y <= threshold)
+            {
+				m_Rigidbody2D.velocity = new Vector2(m_Rigidbody2D.velocity.x, 0f);
+            }
 			m_DashTimeLast = m_DashCooldown;
         }
         #endregion

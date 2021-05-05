@@ -7,8 +7,6 @@ public class PlayerMovement : MonoBehaviour
 
     public CharacterController2D controller;
 
-    public float runSpeed = 400f;
-
     private float horzMove = 0f;
     private bool jump = false;
     private bool dash = false;
@@ -22,7 +20,7 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        horzMove = Input.GetAxisRaw("Horizontal") * runSpeed;
+        horzMove = Input.GetAxisRaw("Horizontal");
 
         if (Input.GetKey(KeyCode.Space))
         {
@@ -46,6 +44,6 @@ public class PlayerMovement : MonoBehaviour
     // Update is called a fixed number of times per second
     private void FixedUpdate()
     {
-        controller.Move(horzMove * Time.fixedDeltaTime, jump, dash);
+        controller.Move(horzMove, jump, dash);
     }
 }
