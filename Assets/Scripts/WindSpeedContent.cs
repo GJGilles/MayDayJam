@@ -9,6 +9,15 @@ public class WindSpeedContent : MonoBehaviour
 
     private GameObject other = null;
 
+
+    public void Start()
+    {
+        if (force.x > 0)
+        {
+            transform.Rotate(0, 0, -90);
+        }
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         other = collision.gameObject;
