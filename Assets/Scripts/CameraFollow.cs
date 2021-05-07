@@ -15,8 +15,6 @@ namespace Assets.Scripts
         private List<Vector3> startPos = new List<Vector3>();
         private List<float> length = new List<float>();
 
-        private float ppu = 16;
-
         private void Start()
         {
             foreach(var b in backgrounds)
@@ -30,20 +28,20 @@ namespace Assets.Scripts
         {
             transform.position = Vector3.Lerp(transform.position, target.position, damping * Time.deltaTime);
 
-            float posX = transform.position.x * parallax;
-            float posY = transform.position.y * parallax;
-
             for (int i = 0; i < backgrounds.Count; i++)
             {
-                backgrounds[i].transform.position = new Vector3(startPos[i].x + posX, startPos[i].y + posY, transform.position.z);
+                float posX = startPos[i].x + transform.position.x * parallax;
+                float posY = startPos[i].y + transform.position.y * parallax;
 
-                if (posX > startPos[i].x + length[i])
+                backgrounds[i].transform.position = new Vector3(posX, posY, transform.position.z);
+
+                if (transform.position.x > posX + length[i])
                 {
                     var pos = startPos[i];
                     pos.x += length[i];
                     startPos[i] = pos;
                 }
-                else if (posX < startPos[i].x - length[i])
+                else if (transform.position.x < posX - length[i])
                 {
                     var pos = startPos[i];
                     pos.x -= length[i];

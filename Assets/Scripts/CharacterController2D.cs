@@ -135,7 +135,7 @@ public class CharacterController2D : MonoBehaviour
 		#region Ground Movement
 		float newMove = move * m_MoveSpeed * Time.deltaTime;
 		float currMove = m_Rigidbody2D.velocity.x;
-		float threshold = 0.001f;
+		float threshold = 0.1f;
 
 		// Dashing
 		if (m_DashTimeLast <= m_DashControlTime)

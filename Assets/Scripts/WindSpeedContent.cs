@@ -5,11 +5,27 @@ using UnityEngine;
 public class WindSpeedContent : MonoBehaviour
 {
 
-    public float force = 1;
+    public Vector2 force;
 
-    private void OnCollisionStay2D(Collision2D collision)
+    private GameObject other = null;
+
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        Rigidbody2D rigid = collision.gameObject.GetComponent<Rigidbody2D>();
-        rigid.AddForce(new Vector2(0, force));
+        other = collision.gameObject;
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        other = null;
+    }
+
+    private void FixedUpdate()
+    {
+        var collider = GetComponent<Collider2D>();
+        
+        if (other != null && collider.IsTouching(other.GetComponent<Collider2D>()))
+        {
+            other.GetComponent<Rigidbody2D>().AddForce(force);
+        }
     }
 }

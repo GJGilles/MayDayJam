@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1884410021228677724}
   - component: {fileID: 5567699047527324892}
   - component: {fileID: 2188380597605990486}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: SpeedWind
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62f3643b8d853a545931a912d30d568a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  acc: 1
+  force: {x: 0, y: 0}
 --- !u!61 &5567699047527324892
 BoxCollider2D:
   m_ObjectHideFlags: 0
