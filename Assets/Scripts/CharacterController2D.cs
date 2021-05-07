@@ -31,6 +31,11 @@ public class CharacterController2D : MonoBehaviour
 	private float m_JumpTimeLast = 0f;
 	private float m_DashTimeLast = 0f;
 
+
+	const string MOVE_PARAM = "Moving";
+	const string JUMP_PARAM = "Jumping";
+	const string DASH_PARAM = "Dashing";
+
 	[Header("Events")]
 	[Space]
 
@@ -51,6 +56,8 @@ public class CharacterController2D : MonoBehaviour
 	// Called on fixed update by the input manager
 	public void Move(float move, bool jump, bool dash)
 	{
+		var animator = GetComponent<Animator>();
+
         #region Grounded Check
         bool wasGrounded = m_Grounded;
 		m_Grounded = false;
@@ -77,9 +84,12 @@ public class CharacterController2D : MonoBehaviour
 
 		#region Jump Cutting
 
-		if (m_JumpTimeLast <= m_JumpControlTime && (m_JumpTimeLast + Time.deltaTime) > m_JumpControlTime && m_Rigidbody2D.velocity.y > 0)
+		// If Jump Ended 
+		if (m_JumpTimeLast <= m_JumpControlTime && (m_JumpTimeLast + Time.deltaTime) > m_JumpControlTime)
 		{
-			m_Rigidbody2D.velocity = new Vector2(m_Rigidbody2D.velocity.x, m_Rigidbody2D.velocity.y * m_JumpCut);
+			if (m_Rigidbody2D.velocity.y > 0)
+				m_Rigidbody2D.velocity = new Vector2(m_Rigidbody2D.velocity.x, m_Rigidbody2D.velocity.y * m_JumpCut);
+			animator.SetBool(JUMP_PARAM, false);
 		}
 
 		if (m_JumpTimeLast <= m_JumpControlTime)
@@ -157,6 +167,9 @@ public class CharacterController2D : MonoBehaviour
 			Vector3 targetVelocity = new Vector2(0, m_Rigidbody2D.velocity.y);
 			m_Rigidbody2D.velocity = Vector3.SmoothDamp(m_Rigidbody2D.velocity, targetVelocity, ref m_Velocity, m_StopSmoothing);
 		}
+
+		animator.SetBool(MOVE_PARAM, (Mathf.Abs(m_Rigidbody2D.velocity.x) > threshold));
+
 		#endregion
 
 		#region Action Movement
@@ -166,12 +179,14 @@ public class CharacterController2D : MonoBehaviour
 			// Add a vertical force to the player.
 			m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
 			m_JumpTimeLast = 0;
+			animator.SetBool(JUMP_PARAM, true);
 		}
 
 		// If the dash has ended
 		if (m_DashTimeLast <= m_DashControlTime && (m_DashTimeLast + Time.deltaTime) > m_DashControlTime)
         {
 			m_Rigidbody2D.velocity = new Vector2(0, 0);
+			animator.SetBool(DASH_PARAM, false);
         }
 
 		// If the player should dash
@@ -184,6 +199,7 @@ public class CharacterController2D : MonoBehaviour
 				m_Rigidbody2D.velocity = new Vector2(m_Rigidbody2D.velocity.x, 0f);
             }
 			m_DashTimeLast = 0;
+			animator.SetBool(DASH_PARAM, true);
 		}
 
 		if (m_DashTimeLast <= m_DashCooldown)
