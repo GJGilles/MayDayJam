@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class UpdateTimer : MonoBehaviour
 {
@@ -24,12 +25,12 @@ public class UpdateTimer : MonoBehaviour
             int seconds = Mathf.FloorToInt(time);
             int mseconds = Mathf.FloorToInt((time - seconds) * 10);
 
-            var asset = GetComponent<UnityEngine.UI.Text>();
+            var asset = GetComponent<TMP_Text>();
             asset.text = string.Format("0:{0}.{1}", seconds.ToString("00"), mseconds);
         }
         else
         {
-            var asset = GetComponent<UnityEngine.UI.Text>();
+            var asset = GetComponent<TMP_Text>();
             asset.text = "0:00.0";
             SceneManager.LoadScene("Lose");
         }

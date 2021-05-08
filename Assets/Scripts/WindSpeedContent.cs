@@ -21,6 +21,8 @@ public class WindSpeedContent : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         other = collision.gameObject;
+
+        GetComponent<AudioSource>().Play();
     }
 
     private void OnTriggerExit2D(Collider2D collision)
