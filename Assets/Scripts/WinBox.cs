@@ -7,6 +7,6 @@ public class WinBox : MonoBehaviour
 {
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        SceneManager.LoadScene("Win");
+        SceneManager.LoadScene("EndStory");
     }
 }

@@ -11,5 +11,10 @@ namespace Assets.Scripts
         {
             SceneManager.LoadScene("Game");
         }
+
+        public void DoneGame()
+        {
+            SceneManager.LoadScene("Start");
+        }
     }
 }

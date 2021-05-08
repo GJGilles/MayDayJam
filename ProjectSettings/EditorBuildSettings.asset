@@ -12,12 +12,15 @@ EditorBuildSettings:
     path: Assets/Scenes/Start.unity
     guid: f12980b577924f142ad871ed6324c155
   - enabled: 1
+    path: Assets/Scenes/StartStory.unity
+    guid: 763416a84570631499e1a160518a55e3
+  - enabled: 1
     path: Assets/Scenes/Game.unity
     guid: 800f098ab642bf04d8e8310f286abfa0
   - enabled: 1
     path: Assets/Scenes/Lose.unity
     guid: fae932850bc70024ba1cea983d1e56da
   - enabled: 1
-    path: Assets/Scenes/Win.unity
-    guid: 9e31d7a9a95b181449da3ef805376ddb
+    path: Assets/Scenes/EndStory.unity
+    guid: 52f3ad6fe6a693d4aaef28a4734acb7f
   m_configObjects: {}
