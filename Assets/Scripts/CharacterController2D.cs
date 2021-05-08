@@ -177,7 +177,7 @@ public class CharacterController2D : MonoBehaviour
 		if (jump)
 		{
 			// Add a vertical force to the player.
-			m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
+			m_Rigidbody2D.velocity = new Vector2(m_Rigidbody2D.velocity.x, m_JumpForce);
 			m_JumpTimeLast = 0;
 			animator.SetBool(JUMP_PARAM, true);
 		}
