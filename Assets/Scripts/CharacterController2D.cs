@@ -16,7 +16,10 @@ public class CharacterController2D : MonoBehaviour
 	[SerializeField] private float m_StopSmoothing = 0.05f;
 	[SerializeField] private LayerMask m_WhatIsGround;							// A mask determining what is ground to the character
 	[SerializeField] private Transform m_GroundCheck;							// A position marking where to check if the player is grounded.
-	[SerializeField] private Transform m_CeilingCheck;							// A position marking where to check for ceilings
+	[SerializeField] private Transform m_CeilingCheck;                          // A position marking where to check for ceilings
+	[SerializeField] private AudioSource m_JumpSound;
+	[SerializeField] private AudioSource m_DashSound;
+
 
 	const float k_GroundedRadius = .2f; // Radius of the overlap circle to determine if grounded
 	private bool m_Grounded;            // Whether or not the player is grounded.
@@ -36,20 +39,9 @@ public class CharacterController2D : MonoBehaviour
 	const string JUMP_PARAM = "Jumping";
 	const string DASH_PARAM = "Dashing";
 
-	[Header("Events")]
-	[Space]
-
-	public UnityEvent OnLandEvent;
-
-	[System.Serializable]
-	public class BoolEvent : UnityEvent<bool> { }
-
 	private void Awake()
 	{
 		m_Rigidbody2D = GetComponent<Rigidbody2D>();
-
-		if (OnLandEvent == null)
-			OnLandEvent = new UnityEvent();
 	}
 
 
@@ -59,7 +51,6 @@ public class CharacterController2D : MonoBehaviour
 		var animator = GetComponent<Animator>();
 
         #region Grounded Check
-        bool wasGrounded = m_Grounded;
 		m_Grounded = false;
 
 		// The player is grounded if a circlecast to the groundcheck position hits anything designated as ground
@@ -70,8 +61,6 @@ public class CharacterController2D : MonoBehaviour
 			if (colliders[i].gameObject != gameObject)
 			{
 				m_Grounded = true;
-				if (!wasGrounded)
-					OnLandEvent.Invoke();
 			}
 		}
 
@@ -180,6 +169,7 @@ public class CharacterController2D : MonoBehaviour
 			m_Rigidbody2D.velocity = new Vector2(m_Rigidbody2D.velocity.x, m_JumpForce);
 			m_JumpTimeLast = 0;
 			animator.SetBool(JUMP_PARAM, true);
+			m_JumpSound.Play();
 		}
 
 		// If the dash has ended
@@ -200,6 +190,7 @@ public class CharacterController2D : MonoBehaviour
             }
 			m_DashTimeLast = 0;
 			animator.SetBool(DASH_PARAM, true);
+			m_DashSound.Play();
 		}
 
 		if (m_DashTimeLast <= m_DashCooldown)
