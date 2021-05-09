@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using UnityEngine.Events;
 using TMPro;
 
 public class UpdateTimer : MonoBehaviour
 {
+    public UnityEvent OnDone;
+
     private float time = 60f;
     private bool started = false;
 
@@ -32,7 +34,7 @@ public class UpdateTimer : MonoBehaviour
         {
             var asset = GetComponent<TMP_Text>();
             asset.text = "0:00.0";
-            SceneManager.LoadScene("Lose");
+            OnDone.Invoke();
         }
     }
 }
