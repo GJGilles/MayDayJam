@@ -9,6 +9,7 @@ public class UpdateTimer : MonoBehaviour
     public UnityEvent OnDone;
 
     private float time = 60f;
+    private float signal = 5f;
     private bool started = false;
 
     // Update is called once per frame
@@ -23,6 +24,12 @@ public class UpdateTimer : MonoBehaviour
         else if ((time - Time.deltaTime) > 0)
         {
             time -= Time.deltaTime;
+
+            if (time <= signal)
+            {
+                signal -= 1f;
+                GetComponent<AudioSource>().Play();
+            }
 
             int seconds = Mathf.FloorToInt(time);
             int mseconds = Mathf.FloorToInt((time - seconds) * 10);
